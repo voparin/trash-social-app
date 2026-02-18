@@ -30,9 +30,20 @@
     2. Scan QR code with Expo Go app
     3. Tap "Reporter" button → should navigate to Reporter Home screen
     4. Go back, tap "Collector" button → should navigate to Collector Home screen
-- [ ] S2 Persist role (AsyncStorage)
+- [x] S2 Persist role (AsyncStorage)
   - Acceptance: Role persists after app restart.
   - Verify: `npx expo start` → select role → reload/restart app → role retained.
+  - **What changed:**
+    - Created RoleContext with AsyncStorage persistence (load on mount, save on role change)
+    - Updated App.js: wrapped in RoleProvider, checks saved role on launch, routes directly to correct home
+    - Updated RoleSelectScreen: saves role to AsyncStorage when button pressed
+    - Added loading spinner while checking saved role
+  - **How to test:**
+    1. Run `npx expo start` and open in Expo Go
+    2. Select "Reporter" → navigates to Reporter Home
+    3. Close app completely (swipe away) and reopen
+    4. App should skip role selection and go directly to Reporter Home
+    5. Test same flow with "Collector" role
 - [ ] S3 Reporter: create report (photo + GPS) stored locally
   - Acceptance: Reporter can create a report with photo + GPS + description and it appears in list.
   - Verify: `npx expo start` → create report → see it in list with photo thumbnail + coords.

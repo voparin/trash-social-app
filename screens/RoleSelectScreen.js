@@ -1,21 +1,29 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useRole } from '../contexts/RoleContext';
 
 export default function RoleSelectScreen({ navigation }) {
+  const { saveRole } = useRole();
+
+  const handleRoleSelect = async (selectedRole, screenName) => {
+    await saveRole(selectedRole);
+    navigation.navigate(screenName);
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Select Your Role</Text>
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate('ReporterHome')}
+        onPress={() => handleRoleSelect('reporter', 'ReporterHome')}
       >
         <Text style={styles.buttonText}>Reporter</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate('CollectorHome')}
+        onPress={() => handleRoleSelect('collector', 'CollectorHome')}
       >
         <Text style={styles.buttonText}>Collector</Text>
       </TouchableOpacity>
