@@ -44,6 +44,12 @@
     3. Close app completely (swipe away) and reopen
     4. App should skip role selection and go directly to Reporter Home
     5. Test same flow with "Collector" role
+- [ ] S2.1 Add “Change role” action (reset navigation + clear storage)
+  - Acceptance: From Reporter/Collector home, user can return to RoleSelect.
+  - Verify: `npx expo start` → pick role → tap Change role → RoleSelect shows → restart app → stays on RoleSelect.
+
+
+
 - [ ] S3 Reporter: create report (photo + GPS) stored locally
   - Acceptance: Reporter can create a report with photo + GPS + description and it appears in list.
   - Verify: `npx expo start` → create report → see it in list with photo thumbnail + coords.
