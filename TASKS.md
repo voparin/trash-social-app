@@ -81,6 +81,61 @@
     8. Report appears in list: thumbnail (or "No Photo" placeholder), description (1 line), coords (if granted), OPEN badge, timestamp
     9. Submit another report without photo/coords → appears in list with placeholder + no coords
     10. Restart app (swipe away + reopen) → reports persist via AsyncStorage
+- [x] S3.1 Report saved confirmation screen
+  - Acceptance: After submitting a report, user sees a confirmation screen with (a) map preview of saved location (or fallback text if no location) and (b) photo thumbnail, plus a button to return to Reporter home.
+  - Verify: `npx expo start` → create report → after submit confirmation shows map+photo → tap "Back to home" → ReporterHome shows the new report in list.
+  - **What changed:**
+    - Created `screens/ReportSavedScreen.js`: shows "Report Saved!" heading, description, photo thumbnail (or "No photo attached" placeholder), MapView+Marker centered on report coords (or "No location recorded" fallback in amber box if coords are null), and "Back to Home" button.
+    - "Back to Home" uses `CommonActions.reset` to `[ReporterHome]` — prevents stacking screens on repeated report creation.
+    - `headerBackVisible: false` on ReportSaved screen hides the system back button so the only exit is via "Back to Home".
+    - Updated `screens/CreateReportScreen.js`: replaced `navigation.goBack()` with `navigation.navigate('ReportSaved', { report })` after `addReport()`.
+    - Updated `App.js`: imported `ReportSavedScreen` and registered `ReportSaved` stack screen.
+    - No new dependencies — uses `react-native-maps` already in package.json.
+  - **How to test:**
+    1. Run `npx expo start` and open in Expo Go as Reporter
+    2. Tap "+ New Report" → fill description → optionally pick photo and/or get GPS → tap "Submit Report"
+    3. **ReportSaved screen** appears: heading "Report Saved!", description text, photo preview (or placeholder), map with pin (or amber fallback if no location)
+    4. No back arrow in header (system back hidden)
+    5. Tap "Back to Home" → lands on ReporterHome with the new report in list
+    6. Repeat steps 2–5 twice → navigation stack stays flat (never accumulates ReportSaved screens)
+    7. Submit a report with no photo and no location → placeholder boxes shown for both
+
+
+- [ ] QA-0 Set up Jest + @testing-library/react-native (test stack prerequisite)
+  - Acceptance: `npx jest` runs and exits 0 on an empty test suite. Requires ADR entry (why Jest, alternative considered).
+  - Verify: `npx jest --passWithNoTests` exits 0.
+  - Blocks: QA-1, QA-2, QA-4, QA-5, QA-6, QA-7 (all automated tasks)
+- [ ] QA-1 Implement TC-001 – TC-007 (RoleContext unit tests)
+  - Acceptance: All 7 TCs pass as automated tests. Covers loadRole happy/edge paths, saveRole, clearRole, and useRole guard.
+  - Verify: `npx jest --testPathPattern=RoleContext` exits 0.
+  - Blocked by: QA-0
+- [ ] QA-2 Implement TC-008 – TC-013 (RoleSelectScreen + AppNavigator initial route)
+  - Acceptance: All 6 TCs pass. Covers button rendering, saveRole calls on tap, and initialRouteName logic.
+  - Verify: `npx jest --testPathPattern=RoleSelect` exits 0.
+  - Blocked by: QA-0
+- [ ] QA-3 Implement TC-014 – TC-018 (Change Role — manual checklist)
+  - Acceptance: Manual checklist written at `__tests__/manual/QA-3-change-role.md`; all 5 TCs documented with steps + expected result.
+  - Verify: File exists and is complete; no QA-0 prerequisite needed.
+- [ ] QA-4 Implement TC-019 – TC-025 (ReportsContext unit tests)
+  - Acceptance: All 7 TCs pass. Covers load, addReport prepend+persist, empty/error paths, useReports guard, and model shape.
+  - Verify: `npx jest --testPathPattern=ReportsContext` exits 0.
+  - Blocked by: QA-0
+- [ ] QA-5 Implement TC-026 – TC-037 (CreateReportScreen tests)
+  - Acceptance: All 12 TCs pass. Covers happy submit, validation alert, photo picker cancel, location denied/error, double-submit guard, and report model fields.
+  - Verify: `npx jest --testPathPattern=CreateReportScreen` exits 0.
+  - Blocked by: QA-0
+- [ ] QA-6 Implement TC-038 – TC-045 (ReporterHomeScreen list tests)
+  - Acceptance: All 8 TCs pass (TC-045 is manual). Covers empty state, list rendering, coords format, status badge, New Report navigation, placeholder, and null coords.
+  - Verify: `npx jest --testPathPattern=ReporterHomeScreen` exits 0; TC-045 in manual checklist.
+  - Blocked by: QA-0
+- [ ] QA-7 Implement TC-046 – TC-055 (ReportSavedScreen tests)
+  - Acceptance: All 10 TCs pass (TC-054, TC-055 are manual). Covers MapView/Image render, fallbacks, Back to Home dispatch, and no-stack-growth.
+  - Verify: `npx jest --testPathPattern=ReportSavedScreen` exits 0; TC-054 and TC-055 in manual checklist.
+  - Blocked by: QA-0
+- [ ] QA-8 Implement TC-056 – TC-060 (cross-cutting regression — manual checklist)
+  - Acceptance: Manual checklist written at `__tests__/manual/QA-8-regression.md`; all 5 TCs documented.
+  - Verify: File exists and is complete; no QA-0 prerequisite needed.
+
 - [ ] S4 Collector: list/map reports + mark collected w/ proof photo
   - Acceptance: Collector can mark a report as collected and attach proof photo; status updates.
   - Verify: `npx expo start` → collector marks collected → status updates in list/map/details.

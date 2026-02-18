@@ -79,7 +79,7 @@ export default function CreateReportScreen({ navigation }) {
     };
     await addReport(report);
     setSubmitting(false);
-    navigation.goBack();
+    navigation.navigate('ReportSaved', { report });
   };
 
   return (

@@ -89,3 +89,38 @@ Template:
   - Brace-balance check on all 4 changed JS files → all balanced (OK)
 - Verification result: ✅ Metro bundler started without compilation errors. All JS files pass brace balance check. Flow: ReporterHome → CreateReport (description + photo + GPS) → Submit → back to ReporterHome with report in list.
 - Follow-ups / bugs: Next task is S4 (Collector: list/map reports + mark collected)
+
+---
+
+- Date: 2026-02-18
+- Agent: UI Builder
+- Task ID: S3.1
+- Summary: Added ReportSavedScreen confirmation screen. After submit, navigates to ReportSaved showing photo thumbnail, MapView+Marker (or fallback text), and "Back to Home" button that resets stack to ReporterHome.
+- Files changed:
+  - screens/ReportSavedScreen.js: NEW — photo preview, MapView (react-native-maps, already in deps), location fallback, CommonActions.reset "Back to Home"
+  - screens/CreateReportScreen.js: UPDATED — navigation.navigate('ReportSaved', { report }) instead of goBack()
+  - App.js: UPDATED — imported ReportSavedScreen, registered ReportSaved stack screen with headerBackVisible: false
+- Commands run:
+  - `CI=1 npx expo start --no-dev --port 8082` → Metro started on 8082, no errors
+  - Brace-balance check on ReportSavedScreen.js, CreateReportScreen.js, App.js → all OK
+- Verification result: ✅ Metro bundler started without errors. Stack navigation resets to ReporterHome on "Back to Home" (no screen stacking). MapView from react-native-maps used (no new dependency).
+- Follow-ups / bugs: Next task is S4 (Collector: list/map + mark collected)
+
+---
+
+- Date: 2026-02-18
+- Agent: QA Test Manager
+- Task ID: (analysis run — covers S1, S2, S2.1, S3, S3.1)
+- Summary: Analyzed all 5 Done Sprint tasks by reading source files. Produced TEST_PLAN.md with 60 globally-numbered test cases (TC-001…TC-060) across 8 feature areas. Created 9 engineer tasks (QA-0…QA-8) in TASKS.md.
+- Files changed:
+  - TEST_PLAN.md: CREATED — 60 test cases across RoleContext, RoleSelectScreen, Change Role, ReportsContext, CreateReportScreen, ReporterHomeScreen, ReportSavedScreen, and regression
+  - TASKS.md: UPDATED — added QA-0 (test stack setup) and QA-1 through QA-8 engineer tasks
+- Commands run:
+  - Read all 6 source files + package.json to verify actual behavior before writing test cases
+  - `node -e "..."` to list all installed dependencies — no Jest/testing-library found
+- Verification result: ✅ TEST_PLAN.md written with 60 TCs. TASKS.md updated with 9 QA tasks.
+- Prerequisite flagged: QA-0 (Jest + @testing-library/react-native) must be resolved + ADR written before QA-1/2/4/5/6/7 can be automated. QA-3 and QA-8 are manual checklists with no QA-0 dependency.
+- Notable findings from source review:
+  - `saveRole` error path: if `AsyncStorage.setItem` throws, `setRole` is NOT called → in-memory state stays stale while storage failed. Edge case worth testing (TC-006 covers a related path; engineer may want to add a test for saveRole error path).
+  - `hasLocation` in ReportSavedScreen: `lat != null && lon != null` — correctly treats 0,0 as valid location (TC-053).
+  - `formatCoords` in ReporterHomeScreen: returns null if EITHER lat or lon is null, so a report with lat set but lon null shows no coords row (TC-044 covers this via ReportSavedScreen; engineer should add equivalent for home list).

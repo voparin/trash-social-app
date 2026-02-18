@@ -8,6 +8,7 @@ import RoleSelectScreen from './screens/RoleSelectScreen';
 import ReporterHomeScreen from './screens/ReporterHomeScreen';
 import CollectorHomeScreen from './screens/CollectorHomeScreen';
 import CreateReportScreen from './screens/CreateReportScreen';
+import ReportSavedScreen from './screens/ReportSavedScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -50,6 +51,11 @@ function AppNavigator() {
           name="CreateReport"
           component={CreateReportScreen}
           options={{ title: 'New Report' }}
+        />
+        <Stack.Screen
+          name="ReportSaved"
+          component={ReportSavedScreen}
+          options={{ title: 'Report Saved', headerBackVisible: false }}
         />
       </Stack.Navigator>
     </NavigationContainer>
