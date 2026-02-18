@@ -113,9 +113,11 @@
   - Acceptance: All 6 TCs pass. Covers button rendering, saveRole calls on tap, and initialRouteName logic.
   - Verify: `npx jest --testPathPattern=RoleSelect` exits 0.
   - Blocked by: QA-0
-- [ ] QA-3 Implement TC-014 – TC-018 (Change Role — manual checklist)
+- [x] QA-3 Implement TC-014 – TC-018 (Change Role — manual checklist)
   - Acceptance: Manual checklist written at `__tests__/manual/QA-3-change-role.md`; all 5 TCs documented with steps + expected result.
   - Verify: File exists and is complete; no QA-0 prerequisite needed.
+  - **What changed:** Created `__tests__/manual/QA-3-change-role.md` with 5 test cases (TC-014–018). Each has numbered steps derived from actual source code, explicit expected outcome, and PASS/FAIL checkbox. Steps reference exact UI text from the screens.
+  - **How to test:** Open `__tests__/manual/QA-3-change-role.md`, run `npx expo start`, and execute each checklist in order on a real device or Expo Go.
 - [ ] QA-4 Implement TC-019 – TC-025 (ReportsContext unit tests)
   - Acceptance: All 7 TCs pass. Covers load, addReport prepend+persist, empty/error paths, useReports guard, and model shape.
   - Verify: `npx jest --testPathPattern=ReportsContext` exits 0.
@@ -132,9 +134,15 @@
   - Acceptance: All 10 TCs pass (TC-054, TC-055 are manual). Covers MapView/Image render, fallbacks, Back to Home dispatch, and no-stack-growth.
   - Verify: `npx jest --testPathPattern=ReportSavedScreen` exits 0; TC-054 and TC-055 in manual checklist.
   - Blocked by: QA-0
-- [ ] QA-8 Implement TC-056 – TC-060 (cross-cutting regression — manual checklist)
+- [x] QA-8 Implement TC-056 – TC-060 (cross-cutting regression — manual checklist)
   - Acceptance: Manual checklist written at `__tests__/manual/QA-8-regression.md`; all 5 TCs documented.
   - Verify: File exists and is complete; no QA-0 prerequisite needed.
+  - **What changed:** Created `__tests__/manual/QA-8-regression.md` with 5 regression test cases (TC-056–060). Includes full fresh-app E2E flow (TC-056), persistence after restart (TC-057), context availability check (TC-058), Collector regression (TC-059), and all-5-routes reachability (TC-060). Each has a Reset/Precondition clause, numbered steps with exact UI labels, and PASS/FAIL checkbox.
+  - **How to test:** Open `__tests__/manual/QA-8-regression.md`, run `npx expo start`, and execute each checklist in order on a real device or Expo Go.
+
+- [ ] QA-0 Testing foundation: add Jest + React Native Testing Library
+  - Acceptance: `npm test` runs and executes at least 1 passing test.
+  - Verify: `npm test` → shows 1 passing test and exits 0.
 
 - [ ] S4 Collector: list/map reports + mark collected w/ proof photo
   - Acceptance: Collector can mark a report as collected and attach proof photo; status updates.
