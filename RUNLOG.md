@@ -56,3 +56,18 @@ Template:
   - Node verification: ✓ AsyncStorage persistence implemented, ✓ React hooks used
 - Verification result: ✅ Expo compiled successfully with no errors. AsyncStorage getItem/setItem calls confirmed. Role persistence logic implemented per ADR-002 (React Context + AsyncStorage).
 - Follow-ups / bugs: Next task is S3 (Reporter: create report with photo + GPS)
+
+---
+
+- Date: 2026-02-18
+- Agent: UI Builder
+- Task ID: S2.1
+- Summary: Added "Change Role" button to Reporter and Collector home screens. Clears saved role from AsyncStorage and resets navigation stack to RoleSelect.
+- Files changed:
+  - screens/ReporterHomeScreen.js: Added "Change Role" button with handleChangeRole function
+  - screens/CollectorHomeScreen.js: Added "Change Role" button with handleChangeRole function
+- Commands run:
+  - `CI=1 npx expo start` → Metro bundler started successfully on port 8081
+  - Verified handleChangeRole implementation in both screens (clearRole + navigation.reset)
+- Verification result: ✅ Expo compiled successfully. Both screens now have Change Role button that clears AsyncStorage and resets navigation to RoleSelect.
+- Follow-ups / bugs: Next task is S3 (Reporter: create report with photo + GPS)

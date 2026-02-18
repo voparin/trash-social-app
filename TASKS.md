@@ -44,9 +44,20 @@
     3. Close app completely (swipe away) and reopen
     4. App should skip role selection and go directly to Reporter Home
     5. Test same flow with "Collector" role
-- [ ] S2.1 Add “Change role” action (reset navigation + clear storage)
+- [x] S2.1 Add "Change role" action (reset navigation + clear storage)
   - Acceptance: From Reporter/Collector home, user can return to RoleSelect.
   - Verify: `npx expo start` → pick role → tap Change role → RoleSelect shows → restart app → stays on RoleSelect.
+  - **What changed:**
+    - Added "Change Role" button to ReporterHomeScreen and CollectorHomeScreen
+    - Button calls clearRole() to remove saved role from AsyncStorage
+    - Uses CommonActions.reset() to clear navigation stack and return to RoleSelect
+    - After restart, app stays on RoleSelect (no saved role)
+  - **How to test:**
+    1. Run `npx expo start` and open in Expo Go
+    2. Select "Reporter" → navigates to Reporter Home
+    3. Tap "Change Role" button → returns to RoleSelect screen
+    4. Select "Collector" this time → navigates to Collector Home
+    5. Close app completely and reopen → should show RoleSelect (role was cleared)
 
 
 
