@@ -18,9 +18,18 @@
 - [ ] A4 Tech choices (state mgmt, storage, maps)
 
 ## Sprint (current)
-- [ ] S1 Navigation skeleton + RoleSelect
+- [x] S1 Navigation skeleton + RoleSelect
   - Acceptance: User can choose Reporter/Collector and see correct home screen.
   - Verify: `npx expo start` → choose each role → correct screen shows.
+  - **What changed:**
+    - Created 3 screens: RoleSelectScreen (2 buttons), ReporterHomeScreen, CollectorHomeScreen
+    - Set up React Navigation native-stack in App.js
+    - RoleSelect screen navigates to ReporterHome or CollectorHome based on button tap
+  - **How to test:**
+    1. Run `npx expo start`
+    2. Scan QR code with Expo Go app
+    3. Tap "Reporter" button → should navigate to Reporter Home screen
+    4. Go back, tap "Collector" button → should navigate to Collector Home screen
 - [ ] S2 Persist role (AsyncStorage)
   - Acceptance: Role persists after app restart.
   - Verify: `npx expo start` → select role → reload/restart app → role retained.
