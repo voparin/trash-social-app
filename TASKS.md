@@ -1,7 +1,18 @@
 # TASKS
 
 ## Backlog
-- [ ] A1 Define app scope + MVP acceptance criteria
+- [x] A1 Define app scope + MVP acceptance criteria
+  **SCOPE**: Local-first trash reporting mobile app (iOS/Android)
+  - Two roles: Reporter (creates reports), Collector (collects trash)
+  - Reporter: Take photo + GPS, add description, see own reports
+  - Collector: View reports (list/map), navigate to location, mark collected with proof photo
+  - Local storage only (no backend/sync in MVP)
+  **MVP CRITERIA**:
+  - [ ] User can select Reporter or Collector role at launch (persisted)
+  - [ ] Reporter can create report (photo + GPS + description) and view report list
+  - [ ] Collector can view reports in list/map, mark collected with proof photo
+  - [ ] All data persists locally after app restart
+  - [ ] App runs on both iOS and Android via Expo Go
 - [ ] A2 Navigation plan (role-based)
 - [ ] A3 Data model (local-first) + folder structure
 - [ ] A4 Tech choices (state mgmt, storage, maps)
