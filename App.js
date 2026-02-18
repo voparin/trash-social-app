@@ -3,9 +3,11 @@ import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RoleProvider, useRole } from './contexts/RoleContext';
+import { ReportsProvider } from './contexts/ReportsContext';
 import RoleSelectScreen from './screens/RoleSelectScreen';
 import ReporterHomeScreen from './screens/ReporterHomeScreen';
 import CollectorHomeScreen from './screens/CollectorHomeScreen';
+import CreateReportScreen from './screens/CreateReportScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,7 +22,6 @@ function AppNavigator() {
     );
   }
 
-  // Determine initial route based on saved role
   const initialRouteName = role === 'reporter'
     ? 'ReporterHome'
     : role === 'collector'
@@ -45,6 +46,11 @@ function AppNavigator() {
           component={CollectorHomeScreen}
           options={{ title: 'Collector' }}
         />
+        <Stack.Screen
+          name="CreateReport"
+          component={CreateReportScreen}
+          options={{ title: 'New Report' }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -53,7 +59,9 @@ function AppNavigator() {
 export default function App() {
   return (
     <RoleProvider>
-      <AppNavigator />
+      <ReportsProvider>
+        <AppNavigator />
+      </ReportsProvider>
     </RoleProvider>
   );
 }

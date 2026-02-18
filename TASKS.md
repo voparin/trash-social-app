@@ -61,9 +61,26 @@
 
 
 
-- [ ] S3 Reporter: create report (photo + GPS) stored locally
+- [x] S3 Reporter: create report (photo + GPS) stored locally
   - Acceptance: Reporter can create a report with photo + GPS + description and it appears in list.
   - Verify: `npx expo start` → create report → see it in list with photo thumbnail + coords.
+  - **What changed:**
+    - Created `contexts/ReportsContext.js`: React Context + AsyncStorage persistence (same pattern as RoleContext). Provides `reports` array and `addReport(report)`. Report model: `{id, createdAt, description, photoUri, lat, lon, status: "OPEN"}`.
+    - Created `screens/CreateReportScreen.js`: scrollable form with description TextInput, photo picker (expo-image-picker library), GPS fetch (expo-location). **Location decision:** if permission denied, shows inline message "Location permission denied — report will be saved without coordinates" and allows submit without coords (non-blocking).
+    - Updated `screens/ReporterHomeScreen.js`: replaced placeholder with FlatList of reports (thumbnail, description 1-line, coords if present, OPEN badge, created time) + "New Report" button.
+    - Updated `App.js`: wrapped with `<ReportsProvider>`, registered `CreateReport` screen in Stack.Navigator.
+    - Updated `app.json`: added iOS `NSPhotoLibraryUsageDescription` + `NSLocationWhenInUseUsageDescription` and Android `permissions` for photo/location (required for production builds).
+  - **How to test:**
+    1. Run `npx expo start` and open in Expo Go
+    2. Select "Reporter" → Reporter Home screen with empty list and "+ New Report" button
+    3. Tap "+ New Report" → CreateReport screen opens
+    4. Enter a description (required — tap Submit without one to see alert)
+    5. Tap "Pick Photo from Library" → select a photo → thumbnail preview appears
+    6. Tap "Get GPS Location" → grant permission → GPS coords shown below button
+    7. Tap "Submit Report" → navigates back to Reporter Home
+    8. Report appears in list: thumbnail (or "No Photo" placeholder), description (1 line), coords (if granted), OPEN badge, timestamp
+    9. Submit another report without photo/coords → appears in list with placeholder + no coords
+    10. Restart app (swipe away + reopen) → reports persist via AsyncStorage
 - [ ] S4 Collector: list/map reports + mark collected w/ proof photo
   - Acceptance: Collector can mark a report as collected and attach proof photo; status updates.
   - Verify: `npx expo start` → collector marks collected → status updates in list/map/details.
