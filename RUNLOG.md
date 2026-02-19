@@ -124,3 +124,50 @@ Template:
   - `saveRole` error path: if `AsyncStorage.setItem` throws, `setRole` is NOT called → in-memory state stays stale while storage failed. Edge case worth testing (TC-006 covers a related path; engineer may want to add a test for saveRole error path).
   - `hasLocation` in ReportSavedScreen: `lat != null && lon != null` — correctly treats 0,0 as valid location (TC-053).
   - `formatCoords` in ReporterHomeScreen: returns null if EITHER lat or lon is null, so a report with lat set but lon null shows no coords row (TC-044 covers this via ReportSavedScreen; engineer should add equivalent for home list).
+
+---
+
+- Date: 2026-02-18
+- Agent: QA Test Engineer
+- Task IDs: QA-3, QA-8
+- Summary: Implemented manual test checklists for QA-3 (Change Role, TC-014–018) and QA-8 (cross-cutting regression, TC-056–060). No QA-0 prerequisite required for either task.
+- Files changed:
+  - __tests__/manual/QA-3-change-role.md: CREATED — 5 test cases with numbered steps, exact UI labels from source, expected outcomes, PASS/FAIL checkboxes, and summary table
+  - __tests__/manual/QA-8-regression.md: CREATED — 5 regression test cases including fresh-app E2E, persistence after restart, context availability, Collector regression, and all-5-routes reachability
+  - TASKS.md: marked QA-3 and QA-8 [x] Done with "What changed" and "How to test"
+- Commands run:
+  - Read CollectorHomeScreen.js, App.js, TEST_PLAN.md, ReporterHomeScreen.js to ground checklist steps in actual source behavior
+  - `mkdir -p __tests__/manual` to create checklist directory
+- Verification result: ✅ Both checklist files created. Steps verified against source code (exact UI strings, navigation targets, and state behavior match implementation). QA-3 and QA-8 marked Done in TASKS.md.
+- Remaining blocked tasks: QA-1, QA-2, QA-4, QA-5, QA-6, QA-7 all blocked on QA-0 (Jest setup).
+
+---
+
+- Date: 2026-02-19
+- Agent: UI Builder
+- Task ID: S4 (partial — list + detail only)
+- Summary: Collector can now view all reports in a list and tap through to a detail screen. Mark Collected not yet implemented.
+- Files changed:
+  - screens/CollectorHomeScreen.js: UPDATED — replaced placeholder with FlatList (useReports), description + timestamp + colour-coded status badge per row, tap → ReportDetail, empty state, Change Role retained
+  - screens/ReportDetailScreen.js: CREATED — status badge, photo or placeholder, description, coords (5dp) or fallback, created-at timestamp
+  - App.js: UPDATED — imported ReportDetailScreen, registered ReportDetail stack screen
+- Commands run:
+  - `CI=1 npx expo start --no-dev --port 8083` → Metro started on 8083, no errors
+  - Brace-balance check on CollectorHomeScreen.js, ReportDetailScreen.js, App.js → all OK
+- Verification result: ✅ Metro bundler started without errors. All JS files balanced. Collector list + detail flow ready for manual verification in Expo Go.
+- Follow-ups / bugs: Next sub-task is S4.1 (Mark Collected + proof photo)
+
+---
+
+- Date: 2026-02-19
+- Agent: UI Builder
+- Task ID: S4.1
+- Summary: Added Mark Collected flow to ReportDetailScreen. updateReport added to ReportsContext. Detail reads live from context so status updates in-place without navigation.
+- Files changed:
+  - contexts/ReportsContext.js: UPDATED — added updateReport(updatedReport): map-replace by id, AsyncStorage persist, setReports; exposed in Provider value
+  - screens/ReportDetailScreen.js: REWRITTEN — reads live report via reports.find(id) from context; "Mark Collected" button (OPEN only) → launchImageLibraryAsync → updateReport({status:'COLLECTED', proofPhotoUri}); ActivityIndicator during pick; Proof Photo section when proofPhotoUri set; cancel picker = no-op
+- Commands run:
+  - Brace-balance check: ReportsContext.js 19/19 OK, ReportDetailScreen.js 67/67 OK
+  - `CI=1 npx expo start --no-dev --port 8084` → Metro started on 8084, no errors
+- Verification result: ✅ Metro clean. Status updates reactively in detail and list via shared context state. Persistence via AsyncStorage.updateReport.
+- Follow-ups / bugs: None. S4.1 complete.

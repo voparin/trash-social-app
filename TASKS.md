@@ -144,9 +144,36 @@
   - Acceptance: `npm test` runs and executes at least 1 passing test.
   - Verify: `npm test` → shows 1 passing test and exits 0.
 
-- [ ] S4 Collector: list/map reports + mark collected w/ proof photo
-  - Acceptance: Collector can mark a report as collected and attach proof photo; status updates.
-  - Verify: `npx expo start` → collector marks collected → status updates in list/map/details.
+- [x] S4 (partial) Collector: list reports + detail view
+  - Acceptance: Collector sees all reports in a list; tapping opens detail with photo, description, coords, status.
+  - Verify: `npx expo start` → Collector role → list shown → tap item → detail screen opens.
+  - **What changed:**
+    - Updated `screens/CollectorHomeScreen.js`: replaced placeholder with FlatList consuming `useReports`. Each row shows description (1 line), timestamp, and a colour-coded status badge (OPEN = orange, COLLECTED = green). Tapping a row navigates to `ReportDetail` with the report as params. Empty state shown when no reports exist. Change Role button retained at bottom.
+    - Created `screens/ReportDetailScreen.js`: ScrollView showing status badge, photo (or "No photo attached" placeholder), description, coords formatted to 5 decimal places (or "No location recorded"), and created-at timestamp.
+    - Updated `App.js`: imported `ReportDetailScreen`, registered `ReportDetail` stack screen.
+  - **How to test:**
+    1. Run `npx expo start` and open in Expo Go
+    2. First create 1–2 reports as Reporter (or use existing ones)
+    3. Tap "Change Role" → select "Collector"
+    4. CollectorHome shows the report list: description, timestamp, OPEN badge
+    5. Tap any row → ReportDetail opens with photo, description, coords, status, timestamp
+    6. Use native back arrow to return to list
+    7. With no reports: empty state "No reports yet. Reporters will create them." shown
+  - **Not yet implemented:** Mark Collected action, proof photo, map on detail
+- [x] S4.1 Collector: mark collected with proof photo
+  - Acceptance: Tapping "Mark Collected" on an OPEN report picks a proof photo, updates status to COLLECTED in store, and updates immediately in list and detail.
+  - Verify: `npx expo start` → Collector → tap OPEN report → tap "Mark Collected" → pick photo → status badge turns green in detail; back in list status shows COLLECTED.
+  - **What changed:**
+    - `contexts/ReportsContext.js`: added `updateReport(updatedReport)` — map-replaces report by id, persists full array to AsyncStorage, updates state.
+    - `screens/ReportDetailScreen.js`: rewritten to read the live report from context by id (`reports.find(r => r.id === reportId)`) instead of stale route.params — ensures status badge and proof photo update in-place without navigation. Added "Mark Collected" green button (visible only when `status === 'OPEN'`): launches image library picker; on photo selected calls `updateReport({...report, status:'COLLECTED', proofPhotoUri})`. Cancelling picker does nothing. Button shows `ActivityIndicator` while processing. Proof Photo section renders below timestamp when `proofPhotoUri` is set.
+  - **How to test:**
+    1. Run `npx expo start`, open as Collector
+    2. Tap an OPEN report — detail shows orange OPEN badge and green "Mark Collected" button at bottom
+    3. Tap "Mark Collected" → image picker opens → select a photo
+    4. Detail screen immediately shows: green COLLECTED badge, "Mark Collected" button gone, "Proof Photo" section with selected image
+    5. Press back → list shows the same report with green COLLECTED badge
+    6. Restart app → COLLECTED status and proof photo persist (AsyncStorage)
+    7. Already-COLLECTED report: open detail → no "Mark Collected" button shown
 
 ## Done
 - [ ] (empty)

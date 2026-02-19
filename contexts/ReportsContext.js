@@ -33,8 +33,20 @@ export function ReportsProvider({ children }) {
     }
   };
 
+  const updateReport = async (updatedReport) => {
+    try {
+      const updated = reports.map((r) =>
+        r.id === updatedReport.id ? updatedReport : r
+      );
+      await AsyncStorage.setItem(REPORTS_STORAGE_KEY, JSON.stringify(updated));
+      setReports(updated);
+    } catch (error) {
+      console.error('Failed to update report:', error);
+    }
+  };
+
   return (
-    <ReportsContext.Provider value={{ reports, addReport }}>
+    <ReportsContext.Provider value={{ reports, addReport, updateReport }}>
       {children}
     </ReportsContext.Provider>
   );
