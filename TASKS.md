@@ -101,7 +101,91 @@
     7. Submit a report with no photo and no location → placeholder boxes shown for both
 
 
-- [ ] QA-0 Set up Jest + @testing-library/react-native (test stack prerequisite)
+- [ ] S3.2 Reporter: take photo with camera (in addition to gallery)
+  - **Use-case defined by Architect (2026-02-20) — implementation task for UI Builder.**
+
+  ### User Flow
+  The `CreateReportScreen` "Photo" section gains two stacked buttons instead of one:
+
+  ```
+  [Photo label]
+  ┌─────────────────────────┐
+  │  Take Photo (camera)    │  ← new, dark-grey
+  └─────────────────────────┘
+  ┌─────────────────────────┐
+  │  Pick from Gallery      │  ← existing (renamed from "Pick Photo from Library")
+  └─────────────────────────┘
+  [inline feedback text — permission denied or error]
+  [photo preview — same as today when uri is set]
+  ```
+
+  **States for button labels** (after a photo is already selected):
+  - Camera button becomes **"Retake Photo"**
+  - Gallery button becomes **"Change Photo"**
+
+  **Full happy-path flow (camera):**
+  1. Reporter opens CreateReport screen.
+  2. Reporter taps **"Take Photo"**.
+  3. `expo-image-picker` calls `requestCameraPermissionsAsync()`.
+  4. System permission dialog shown (first use only). Reporter grants.
+  5. Native camera UI opens (`launchCameraAsync`).
+  6. Reporter captures a photo and confirms.
+  7. `result.canceled === false` → `photoUri` set → preview rendered → button label → "Retake Photo".
+  8. Reporter taps **"Submit Report"** → flow continues identically to gallery path.
+
+  **Cancel path:**
+  - Reporter taps **"Take Photo"** → camera opens → taps "Cancel"/"Discard".
+  - `result.canceled === true` → `photoUri` unchanged → no message shown.
+
+  ### Permission Handling
+
+  | Scenario | Behaviour |
+  |---|---|
+  | First use — dialog shown | System dialog; Reporter grants → camera opens |
+  | Permission denied (this run) | Inline message: `"Camera access denied — use Pick from Gallery instead."` Gallery button stays active. |
+  | Permission permanently denied (iOS Settings) | Same inline message (MVP: no deep-link to Settings needed) |
+  | Camera hardware unavailable (e.g. simulator) | `launchCameraAsync` error caught → inline message: `"Camera not available on this device."` |
+  | Permission granted, capture cancelled | No message, no state change |
+
+  The inline message replaces any previous photo-related message (shared `photoMsg` state string, separate from `locationMsg`).
+
+  ### Minimal UI Requirements
+  - **Label:** "Photo" — unchanged, already present.
+  - **"Take Photo" button:** secondary/dark-grey fill (`#555`), full-width, above gallery button.
+  - **"Pick from Gallery" button:** keep existing blue (`#007AFF`); rename label from "Pick Photo from Library" → "Pick from Gallery" (shorter).
+  - **Label change when photo set:** "Take Photo" → "Retake Photo"; "Pick from Gallery" → "Change Photo".
+  - **Feedback text:** single `photoMsg` string rendered below both buttons (replaces nothing if empty); red colour for error/denied, grey for info. No toast, no modal — inline only.
+  - **Preview:** unchanged — `Image` component below feedback text when `photoUri != null`.
+  - **`app.json` additions required** (not a new dependency — `expo-image-picker` already installed):
+    - iOS `infoPlist.NSCameraUsageDescription`: `"Used to photograph trash for your report."`
+    - Android `permissions`: add `"android.permission.CAMERA"`
+
+  ### Acceptance Criteria
+  - **AC-1** "Take Photo" and "Pick from Gallery" buttons both visible on CreateReport screen under the "Photo" label.
+  - **AC-2** Tapping "Take Photo" triggers a system camera permission dialog on first use (iOS/Android).
+  - **AC-3** After capturing a photo, the photo preview appears — identical UX to the gallery path.
+  - **AC-4** Tapping cancel in the camera UI leaves the `photoUri` and preview unchanged.
+  - **AC-5** If camera permission is denied, the inline message `"Camera access denied — use Pick from Gallery instead."` is shown; the gallery button still works.
+  - **AC-6** If camera hardware is unavailable, the inline message `"Camera not available on this device."` is shown; the gallery button still works.
+  - **AC-7** Submitting a report taken with the camera produces the same data model shape as a gallery photo (`photoUri` field populated). No model changes required.
+  - **AC-8** Both buttons relabel when a photo is already set ("Retake Photo" / "Change Photo").
+
+  ### Verify Steps
+  1. `npx expo start` → Reporter → "+ New Report" → CreateReport screen.
+     - Expected: two buttons visible ("Take Photo", "Pick from Gallery") stacked under "Photo" label.
+  2. Tap "Take Photo" → system permission dialog appears → grant.
+     - Expected: native camera opens.
+  3. Capture a photo → confirm.
+     - Expected: photo preview shown; camera button now reads "Retake Photo"; gallery button reads "Change Photo".
+  4. Tap "Submit Report" → ReportSaved screen shows the camera photo.
+  5. Repeat steps 2–3 but tap Cancel instead of capturing.
+     - Expected: preview unchanged (or still empty); no error message.
+  6. Deny camera permission (or revoke in device Settings) → tap "Take Photo".
+     - Expected: inline message `"Camera access denied — use Pick from Gallery instead."` shown; tap "Pick from Gallery" → gallery picker opens normally.
+  7. (Optional) Run on Android emulator without camera hardware: tap "Take Photo".
+     - Expected: inline message `"Camera not available on this device."` shown; gallery still works.
+
+
   - Acceptance: `npx jest` runs and exits 0 on an empty test suite. Requires ADR entry (why Jest, alternative considered).
   - Verify: `npx jest --passWithNoTests` exits 0.
   - Blocks: QA-1, QA-2, QA-4, QA-5, QA-6, QA-7 (all automated tasks)
@@ -189,12 +273,4 @@
     7. No reports with location: map tab shows "No reports with location data yet."
 
 ## Done
-- [ ] S3.2 Reporter: take photo with camera (in addition to gallery)
-  - Acceptance:
-    - Reporter can choose “Take photo” and capture an image for the report.
-    - If camera permission is denied, user gets a clear message and can still choose gallery.
-  - Verify:
-    - `npx expo start --android` → Reporter → Create Report → Take photo → capture → preview shown → submit works.
-    - Deny camera permission → app shows message and gallery still works.
-
 - [ ] (empty)

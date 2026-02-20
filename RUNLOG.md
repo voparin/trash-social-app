@@ -185,3 +185,16 @@ Template:
   - `CI=1 npx expo start --no-dev --port 8085` → Metro started on 8085, no errors
 - Verification result: ✅ Metro clean. Conditional require prevents web bundling error. List view preserved.
 - Follow-ups / bugs: None.
+
+---
+
+- Date: 2026-02-20
+- Agent: Architect
+- Task ID: S3.2 (use-case definition only)
+- Summary: Defined the S3.2 camera-vs-gallery use case for CreateReportScreen. Produced user flow, permission-handling table, minimal UI requirements (button labels/placement, app.json additions), and 8 acceptance criteria with 7 verify steps. S3.2 was incorrectly placed in the Done section as [ ] — moved to Sprint with full definition. No code or dependency changes.
+- Files changed:
+  - TASKS.md: removed S3.2 stub from Done section; added full S3.2 definition (user flow, permission handling, UI requirements, AC-1..AC-8, verify steps) to Sprint section above QA-0.
+  - RUNLOG.md: this entry
+- Commands run: (none — documentation/definition task)
+- Verification result: ✅ TASKS.md updated; S3.2 is now in Sprint with complete use-case definition. No UI code written; implementation is the next step for the UI Builder agent.
+- Follow-ups / bugs: UI Builder must implement S3.2 per the user flow + AC defined above. Implementation requires: (1) add `requestCameraPermissionsAsync` + `launchCameraAsync` calls in CreateReportScreen.js, (2) add `NSCameraUsageDescription` to app.json (iOS) and `android.permission.CAMERA` to app.json (Android). No new npm dependency needed — expo-image-picker already installed.
