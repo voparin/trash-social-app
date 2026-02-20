@@ -171,3 +171,17 @@ Template:
   - `CI=1 npx expo start --no-dev --port 8084` → Metro started on 8084, no errors
 - Verification result: ✅ Metro clean. Status updates reactively in detail and list via shared context state. Persistence via AsyncStorage.updateReport.
 - Follow-ups / bugs: None. S4.1 complete.
+
+---
+
+- Date: 2026-02-19
+- Agent: UI Builder
+- Task ID: S4.2
+- Summary: Added Map tab to CollectorHome. List view unchanged. MapView guarded by Platform.OS !== 'web' via conditional require. Region auto-fits markers. Pin press navigates to ReportDetail.
+- Files changed:
+  - screens/CollectorHomeScreen.js: UPDATED — List/Map tab toggle; conditional require('react-native-maps') on non-web; mappableReports filter (lat+lon non-null); mapRegion useMemo (min/max lat/lon, 1.5× padding, min delta 0.02); MapView + Marker per mappable report (pinColor by status, onPress → ReportDetail); web fallback text; no-coords-on-map empty state
+- Commands run:
+  - Brace-balance check: CollectorHomeScreen.js 95/95 OK
+  - `CI=1 npx expo start --no-dev --port 8085` → Metro started on 8085, no errors
+- Verification result: ✅ Metro clean. Conditional require prevents web bundling error. List view preserved.
+- Follow-ups / bugs: None.

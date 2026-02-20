@@ -174,6 +174,19 @@
     5. Press back → list shows the same report with green COLLECTED badge
     6. Restart app → COLLECTED status and proof photo persist (AsyncStorage)
     7. Already-COLLECTED report: open detail → no "Mark Collected" button shown
+- [x] S4.2 Collector: map view on CollectorHome
+  - Acceptance: Collector can switch between List and Map tabs; map shows pins for reports with coordinates; tapping a pin opens ReportDetail.
+  - Verify: `npx expo start` → Collector → tap Map tab → pins visible → tap pin → ReportDetail opens.
+  - **What changed:**
+    - `screens/CollectorHomeScreen.js`: added List/Map tab toggle (segmented control style). Map tab renders `MapView` (react-native-maps) guarded by `Platform.OS !== 'web'` — conditional `require` so the module is never imported on web. Filters reports to those with `lat != null && lon != null`. Region auto-fits all markers using min/max lat/lon with 1.5× padding and a minimum delta of 0.02. Each `Marker` has `title=description`, `description=status`, `pinColor` orange (OPEN) or green (COLLECTED), and `onPress` navigates to `ReportDetail`. Reports with no coords are silently excluded. Empty map state: "No reports with location data yet." Web fallback: "Map view is not available on web." List view and Change Role button unchanged.
+  - **How to test:**
+    1. Run `npx expo start`, open as Collector
+    2. **List tab** (default): report list shows as before
+    3. Tap **Map tab**: map renders with orange/green pins for all reports that have GPS coords
+    4. Reports without coords (no GPS when submitted) do not appear on map
+    5. Tap a pin → callout shows description + status → tap again to open ReportDetail
+    6. ReportDetail works normally; press back → returns to CollectorHome map tab
+    7. No reports with location: map tab shows "No reports with location data yet."
 
 ## Done
 - [ ] (empty)
