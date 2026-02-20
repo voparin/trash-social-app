@@ -16,7 +16,8 @@
       "supportsTablet": true,
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Used to attach a photo to your trash report.",
-        "NSLocationWhenInUseUsageDescription": "Used to record the location of the trash for this report."
+        "NSLocationWhenInUseUsageDescription": "Used to record the location of the trash for this report.",
+        "NSCameraUsageDescription": "Used to photograph trash for your report."
       }
     },
     "android": {
@@ -27,6 +28,7 @@
       "edgeToEdgeEnabled": true,
       "permissions": [
         "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.CAMERA",
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.ACCESS_COARSE_LOCATION"
       ]

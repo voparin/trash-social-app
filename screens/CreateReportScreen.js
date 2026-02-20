@@ -22,12 +22,36 @@ export default function CreateReportScreen({ navigation }) {
   const { addReport } = useReports();
   const [description, setDescription] = useState('');
   const [photoUri, setPhotoUri] = useState(null);
+  const [photoMsg, setPhotoMsg] = useState('');
   const [coords, setCoords] = useState(null); // { lat, lon } | null
   const [locationMsg, setLocationMsg] = useState('');
   const [locLoading, setLocLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
+  const takePhoto = async () => {
+    setPhotoMsg('');
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== 'granted') {
+      setPhotoMsg('Camera access denied — use Pick from Gallery instead.');
+      return;
+    }
+    try {
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ['images'],
+        quality: 0.7,
+        allowsEditing: true,
+        aspect: [4, 3],
+      });
+      if (!result.canceled && result.assets?.length > 0) {
+        setPhotoUri(result.assets[0].uri);
+      }
+    } catch {
+      setPhotoMsg('Camera not available on this device.');
+    }
+  };
+
   const pickPhoto = async () => {
+    setPhotoMsg('');
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       quality: 0.7,
@@ -98,11 +122,20 @@ export default function CreateReportScreen({ navigation }) {
       />
 
       <Text style={styles.label}>Photo</Text>
-      <TouchableOpacity style={styles.photoButton} onPress={pickPhoto}>
+      <TouchableOpacity style={styles.cameraButton} onPress={takePhoto}>
         <Text style={styles.photoButtonText}>
-          {photoUri ? 'Change Photo' : 'Pick Photo from Library'}
+          {photoUri ? 'Retake Photo' : 'Take Photo'}
         </Text>
       </TouchableOpacity>
+      <View style={styles.buttonGap} />
+      <TouchableOpacity style={styles.photoButton} onPress={pickPhoto}>
+        <Text style={styles.photoButtonText}>
+          {photoUri ? 'Change Photo' : 'Pick from Gallery'}
+        </Text>
+      </TouchableOpacity>
+      {photoMsg ? (
+        <Text style={styles.photoMsg}>{photoMsg}</Text>
+      ) : null}
       {photoUri && <Image source={{ uri: photoUri }} style={styles.preview} />}
 
       <Text style={styles.label}>Location</Text>
@@ -155,6 +188,15 @@ const styles = StyleSheet.create({
     minHeight: 80,
     textAlignVertical: 'top',
   },
+  cameraButton: {
+    backgroundColor: '#555',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  buttonGap: {
+    height: 8,
+  },
   photoButton: {
     backgroundColor: '#007AFF',
     padding: 12,
@@ -165,6 +207,11 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '600',
     fontSize: 15,
+  },
+  photoMsg: {
+    marginTop: 8,
+    fontSize: 13,
+    color: '#C00',
   },
   preview: {
     width: '100%',

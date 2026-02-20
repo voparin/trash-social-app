@@ -189,6 +189,20 @@ Template:
 ---
 
 - Date: 2026-02-20
+- Agent: UI Builder
+- Task ID: S3.2
+- Summary: Implemented camera capture option in CreateReportScreen. Two stacked buttons ("Take Photo" / "Pick from Gallery") replace the previous single button. Camera permission flow with inline error messages for denied/unavailable cases. Cancel is a no-op. Report model shape unchanged.
+- Files changed:
+  - screens/CreateReportScreen.js: UPDATED — added `photoMsg` state; added `takePhoto()` (requestCameraPermissionsAsync + launchCameraAsync + hardware error catch); `pickPhoto()` clears `photoMsg` on entry; two stacked buttons (cameraButton #555, photoButton #007AFF); buttonGap View; photoMsg inline text (#C00); label toggling (Take Photo/Retake Photo, Pick from Gallery/Change Photo)
+  - app.json: UPDATED — iOS infoPlist.NSCameraUsageDescription added; Android permissions includes android.permission.CAMERA
+- Commands run:
+  - `CI=1 npx expo start --no-dev --port 8086` → Metro started on 8086, no errors
+- Verification result: ✅ Metro bundler started without compilation errors. All S3.2 acceptance criteria (AC-1..AC-8) implemented. No new npm dependency — expo-image-picker already installed.
+- Follow-ups / bugs: None. Manual verification steps in TASKS.md S3.2 "How to test".
+
+---
+
+- Date: 2026-02-20
 - Agent: Architect
 - Task ID: S3.2 (use-case definition only)
 - Summary: Defined the S3.2 camera-vs-gallery use case for CreateReportScreen. Produced user flow, permission-handling table, minimal UI requirements (button labels/placement, app.json additions), and 8 acceptance criteria with 7 verify steps. S3.2 was incorrectly placed in the Done section as [ ] — moved to Sprint with full definition. No code or dependency changes.
