@@ -189,4 +189,12 @@
     7. No reports with location: map tab shows "No reports with location data yet."
 
 ## Done
+- [ ] S3.2 Reporter: take photo with camera (in addition to gallery)
+  - Acceptance:
+    - Reporter can choose “Take photo” and capture an image for the report.
+    - If camera permission is denied, user gets a clear message and can still choose gallery.
+  - Verify:
+    - `npx expo start --android` → Reporter → Create Report → Take photo → capture → preview shown → submit works.
+    - Deny camera permission → app shows message and gallery still works.
+
 - [ ] (empty)
