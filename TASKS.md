@@ -154,9 +154,16 @@
   - **What changed:** Created `__tests__/manual/QA-8-regression.md` with 5 regression test cases (TC-056–060). Includes full fresh-app E2E flow (TC-056), persistence after restart (TC-057), context availability check (TC-058), Collector regression (TC-059), and all-5-routes reachability (TC-060). Each has a Reset/Precondition clause, numbered steps with exact UI labels, and PASS/FAIL checkbox.
   - **How to test:** Open `__tests__/manual/QA-8-regression.md`, run `npx expo start`, and execute each checklist in order on a real device or Expo Go.
 
-- [ ] QA-0 Testing foundation: add Jest + React Native Testing Library
+- [x] QA-0 Testing foundation: add Jest + React Native Testing Library
   - Acceptance: `npm test` runs and executes at least 1 passing test.
   - Verify: `npm test` → shows 1 passing test and exits 0.
+  - **What changed:**
+    - `package.json`: added `"test": "jest"` script; added `"jest"` config block with `jest-expo` preset and `transformIgnorePatterns` for expo/react-native modules; added devDependencies `jest@^29.7.0`, `jest-expo@~54.0.0`, `@testing-library/react-native@^13.3.3`, `react-test-renderer@^19.1.0`
+    - `__tests__/smoke.test.js`: CREATED — one passing sanity test confirming Jest is wired up
+    - `ADR.md`: added ADR-004 documenting test stack choice (jest-expo over Vitest/Mocha) and version constraints
+  - **How to test:**
+    1. Run `npm test`
+    2. Should show `PASS __tests__/smoke.test.js` with 1 passing test and exit 0
 
 - [x] S4 (partial) Collector: list reports + detail view
   - Acceptance: Collector sees all reports in a list; tapping opens detail with photo, description, coords, status.

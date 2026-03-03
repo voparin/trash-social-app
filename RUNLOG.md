@@ -202,6 +202,24 @@ Template:
 
 ---
 
+- Date: 2026-03-03
+- Agent: QA Test Engineer
+- Task ID: QA-0
+- Summary: Installed Jest testing foundation. npm test now runs and exits 0 with 1 passing smoke test. All 6 blocked QA tasks (QA-1, QA-2, QA-4, QA-5, QA-6, QA-7) are now unblocked.
+- Files changed:
+  - package.json: UPDATED — added test script, jest config (jest-expo preset + transformIgnorePatterns), devDependencies (jest@^29.7.0, jest-expo@~54.0.0, @testing-library/react-native@^13.3.3, react-test-renderer@^19.1.0)
+  - __tests__/smoke.test.js: CREATED — sanity test confirming Jest wiring
+  - ADR.md: UPDATED — added ADR-004 (test stack decision)
+  - TASKS.md: UPDATED — QA-0 marked Done with What changed + How to test
+- Commands run:
+  - `npm install --save-dev react-test-renderer@19.1.0 jest-expo@~54.0.0 @testing-library/react-native@^13.0.0 --legacy-peer-deps` → 172 packages added
+  - `npm install --save-dev jest@^29.7.0 --legacy-peer-deps` → 131 packages added (jest binary)
+  - `npm test` → PASS __tests__/smoke.test.js — 1 passed, exits 0
+- Verification result: ✅ npm test exits 0. 1 passing test. QA-0 done.
+- Follow-ups / bugs: None. QA-1, QA-2, QA-4, QA-5, QA-6, QA-7 are now unblocked.
+
+---
+
 - Date: 2026-02-20
 - Agent: Architect
 - Task ID: S3.2 (use-case definition only)

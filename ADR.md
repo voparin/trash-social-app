@@ -40,3 +40,14 @@ Format:
     + Works with expo-location for GPS coordinates
     - Requires API keys for production (not needed in Expo Go)
     - Map library is ~5-10MB additional size
+
+- ADR-004: Testing stack (Jest + jest-expo + @testing-library/react-native)
+  - Status: Accepted
+  - Context: Automated tests needed for context logic, screens, and navigation flows. Must work with Expo SDK 54, React 19, and React Native 0.81.
+  - Decision: Use Jest 29 with jest-expo preset (official Expo testing integration) and @testing-library/react-native v13 (React 19 compatible). Considered alternatives: Vitest (no React Native preset), Mocha (no RN-specific utilities). jest-expo is the first-party recommended solution per Expo docs.
+  - Consequences:
+    + First-party Expo integration — preset handles Babel transforms and module mocking out of the box
+    + @testing-library enforces testing from user's perspective (rendered output, not internals)
+    + jest-expo transformIgnorePatterns handles native module transpilation (expo-*, react-native-*)
+    - react-test-renderer must be pinned to match React version (19.1.0) to avoid peer dep conflicts
+    - Jest 29 must be installed explicitly alongside jest-expo (not declared as peer dep)
