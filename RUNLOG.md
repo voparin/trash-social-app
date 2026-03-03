@@ -234,6 +234,19 @@ Template:
 
 ---
 
+- Date: 2026-03-03
+- Agent: Architect
+- Task ID: S4.3 (use-case definition only)
+- Summary: Defined S4.3 — Collector proof-photo camera option. S4.1 only allows gallery picking; S4.3 adds camera capture (mirrors S3.2 pattern for Reporter). Full acceptance criteria (6 ACs), screen flow, edge-case table, and verify steps written. No new ADR needed (same expo-image-picker + permission pattern; NSCameraUsageDescription and android.permission.CAMERA already in app.json from S3.2).
+- Files changed:
+  - TASKS.md: added S4.3 to Sprint section (above S4.2) with context, 6 ACs, screen flow, 5 edge cases, dependency notes, and verify step
+  - RUNLOG.md: this entry
+- Commands run: (none — documentation/definition task)
+- Verification result: ✅ TASKS.md updated; S4.3 is in Sprint with complete use-case definition. No UI code written; implementation is the next step for the UI Builder agent.
+- Follow-ups / bugs: UI Builder must implement S4.3 per the screen flow + ACs defined above. Implementation requires: (1) replace single "Mark Collected" picker call in ReportDetailScreen.js with two stacked buttons ("Take Proof Photo" / "Pick from Gallery"); (2) add `requestCameraPermissionsAsync` + `launchCameraAsync` path with inline error state; (3) keep gallery path (`launchImageLibraryAsync`) unchanged; (4) no app.json changes needed.
+
+---
+
 - Date: 2026-02-20
 - Agent: Architect
 - Task ID: S3.2 (use-case definition only)

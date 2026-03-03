@@ -197,6 +197,30 @@
     5. Press back → list shows the same report with green COLLECTED badge
     6. Restart app → COLLECTED status and proof photo persist (AsyncStorage)
     7. Already-COLLECTED report: open detail → no "Mark Collected" button shown
+- [ ] S4.3 Collector: take proof photo with camera (in addition to gallery)
+  - **Context:** S4.1 added "Mark Collected" using gallery-only picker. Collectors in the field need to photograph the collected trash in-the-moment; gallery is a fallback, not the primary flow. Mirrors the S3.2 camera-option added for Reporter.
+  - **Acceptance criteria:**
+    1. Tapping "Mark Collected" on an OPEN report offers two buttons: "Take Proof Photo" (camera) and "Pick from Gallery" (library) — stacked vertically, same visual language as CreateReportScreen.
+    2. Camera permission requested on first "Take Proof Photo" tap; if denied, inline red message appears and "Pick from Gallery" still works.
+    3. Cancel from camera or gallery is a no-op (status remains OPEN, no photo set).
+    4. Capturing a photo sets `proofPhotoUri` and updates `status → COLLECTED` (same `updateReport` call as before).
+    5. Hardware-unavailable error (e.g., simulator with no camera) shows inline red message instead of crashing.
+    6. Already-COLLECTED reports: neither button visible (unchanged from S4.1).
+  - **Data model delta:** none — `proofPhotoUri` already on report model (S4.1).
+  - **Screen flow:**
+    1. Collector opens ReportDetail of OPEN report → sees orange OPEN badge + two stacked buttons at bottom: "Take Proof Photo" (dark-grey) and "Pick from Gallery" (blue).
+    2. "Take Proof Photo" → permission check → native camera → capture → `updateReport({status:'COLLECTED', proofPhotoUri})` → detail reacts in-place (green badge, Proof Photo section, buttons gone).
+    3. "Pick from Gallery" → image library picker → select → same update path as (2).
+    4. Cancel from either picker → no change, buttons remain.
+  - **Edge cases:**
+    - Camera permission permanently denied: message "Camera access denied — use Pick from Gallery instead." (red); gallery button still functional.
+    - No camera hardware: catch error, show "Camera unavailable on this device."; gallery still functional.
+    - User cancels camera without capturing: result `cancelled === true` → no-op.
+    - User cancels gallery picker: `cancelled === true` → no-op.
+    - Both buttons missing for COLLECTED report (regression guard).
+  - **Dependencies / app.json:** `NSCameraUsageDescription` (iOS) and `android.permission.CAMERA` already added in S3.2 — no new entries needed. No new npm dependency.
+  - **Verify:** `npx expo start` → Collector → tap OPEN report → two buttons visible → tap "Take Proof Photo" → permission dialog → grant → camera opens → capture → badge turns green, Proof Photo section appears, buttons gone → press back → list shows COLLECTED badge → restart app → state persists.
+
 - [x] S4.2 Collector: map view on CollectorHome
   - Acceptance: Collector can switch between List and Map tabs; map shows pins for reports with coordinates; tapping a pin opens ReportDetail.
   - Verify: `npx expo start` → Collector → tap Map tab → pins visible → tap pin → ReportDetail opens.
