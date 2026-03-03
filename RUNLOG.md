@@ -204,6 +204,20 @@ Template:
 
 - Date: 2026-03-03
 - Agent: QA Test Engineer
+- Task ID: QA-2
+- Summary: Implemented all 6 automated tests for RoleSelectScreen and AppNavigator initial route logic (TC-008–TC-013). All pass.
+- Files changed:
+  - __tests__/screens/RoleSelectScreen.test.js: CREATED — 6 tests. Mocks: AsyncStorage, react-native-maps, expo-image-picker, expo-location.
+  - TASKS.md: QA-2 marked Done
+- Commands run:
+  - `npx jest --testPathPattern=RoleSelectScreen` → PASS — 6 passed, exits 0
+- Verification result: ✅ All 6 TCs pass. Note: benign act() warning for async RoleProvider state update; does not affect correctness.
+- Follow-ups / bugs: None.
+
+---
+
+- Date: 2026-03-03
+- Agent: QA Test Engineer
 - Task ID: QA-0
 - Summary: Installed Jest testing foundation. npm test now runs and exits 0 with 1 passing smoke test. All 6 blocked QA tasks (QA-1, QA-2, QA-4, QA-5, QA-6, QA-7) are now unblocked.
 - Files changed:

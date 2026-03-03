@@ -123,10 +123,12 @@
   - Acceptance: All 7 TCs pass as automated tests. Covers loadRole happy/edge paths, saveRole, clearRole, and useRole guard.
   - Verify: `npx jest --testPathPattern=RoleContext` exits 0.
   - Blocked by: QA-0
-- [ ] QA-2 Implement TC-008 – TC-013 (RoleSelectScreen + AppNavigator initial route)
+- [x] QA-2 Implement TC-008 – TC-013 (RoleSelectScreen + AppNavigator initial route)
   - Acceptance: All 6 TCs pass. Covers button rendering, saveRole calls on tap, and initialRouteName logic.
   - Verify: `npx jest --testPathPattern=RoleSelect` exits 0.
-  - Blocked by: QA-0
+  - **What changed:**
+    - `__tests__/screens/RoleSelectScreen.test.js`: CREATED — 6 tests covering TC-008 through TC-013. TC-008–010 render RoleSelectScreen directly with a mock navigation prop inside RoleProvider. TC-011–013 render the full App with mocked AsyncStorage returning specific role values and assert on the unique text of each landing screen.
+  - **How to test:** `npx jest --testPathPattern=RoleSelectScreen` → 6 passed, exits 0.
 - [x] QA-3 Implement TC-014 – TC-018 (Change Role — manual checklist)
   - Acceptance: Manual checklist written at `__tests__/manual/QA-3-change-role.md`; all 5 TCs documented with steps + expected result.
   - Verify: File exists and is complete; no QA-0 prerequisite needed.
