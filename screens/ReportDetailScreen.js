@@ -18,6 +18,7 @@ export default function ReportDetailScreen({ route }) {
   const report = reports.find((r) => r.id === reportId);
 
   const [collecting, setCollecting] = useState(false);
+  const [proofPhotoMsg, setProofPhotoMsg] = useState('');
 
   if (!report) {
     return (
@@ -30,7 +31,37 @@ export default function ReportDetailScreen({ route }) {
   const hasCoords = report.lat != null && report.lon != null;
   const isOpen = report.status === 'OPEN';
 
-  const handleMarkCollected = async () => {
+  const applyProofPhoto = async (uri) => {
+    await updateReport({ ...report, status: 'COLLECTED', proofPhotoUri: uri });
+  };
+
+  const handleTakeProofPhoto = async () => {
+    setProofPhotoMsg('');
+    setCollecting(true);
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== 'granted') {
+      setProofPhotoMsg('Camera access denied — use Pick from Gallery instead.');
+      setCollecting(false);
+      return;
+    }
+    try {
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ['images'],
+        quality: 0.7,
+        allowsEditing: true,
+        aspect: [4, 3],
+      });
+      if (!result.canceled && result.assets?.length) {
+        await applyProofPhoto(result.assets[0].uri);
+      }
+    } catch {
+      setProofPhotoMsg('Camera unavailable on this device.');
+    }
+    setCollecting(false);
+  };
+
+  const handlePickProofPhoto = async () => {
+    setProofPhotoMsg('');
     setCollecting(true);
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
@@ -38,15 +69,9 @@ export default function ReportDetailScreen({ route }) {
       allowsEditing: true,
       aspect: [4, 3],
     });
-    if (result.canceled || !result.assets?.length) {
-      setCollecting(false);
-      return;
+    if (!result.canceled && result.assets?.length) {
+      await applyProofPhoto(result.assets[0].uri);
     }
-    await updateReport({
-      ...report,
-      status: 'COLLECTED',
-      proofPhotoUri: result.assets[0].uri,
-    });
     setCollecting(false);
   };
 
@@ -98,17 +123,30 @@ export default function ReportDetailScreen({ route }) {
       )}
 
       {isOpen && (
-        <TouchableOpacity
-          style={[styles.collectButton, collecting && styles.collectButtonDisabled]}
-          onPress={handleMarkCollected}
-          disabled={collecting}
-        >
-          {collecting ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.collectButtonText}>Mark Collected</Text>
-          )}
-        </TouchableOpacity>
+        <>
+          <TouchableOpacity
+            style={[styles.cameraProofButton, collecting && styles.collectButtonDisabled]}
+            onPress={handleTakeProofPhoto}
+            disabled={collecting}
+          >
+            {collecting ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.collectButtonText}>Take Proof Photo</Text>
+            )}
+          </TouchableOpacity>
+          <View style={styles.buttonGap} />
+          <TouchableOpacity
+            style={[styles.galleryProofButton, collecting && styles.collectButtonDisabled]}
+            onPress={handlePickProofPhoto}
+            disabled={collecting}
+          >
+            <Text style={styles.collectButtonText}>Pick from Gallery</Text>
+          </TouchableOpacity>
+          {proofPhotoMsg ? (
+            <Text style={styles.proofPhotoMsg}>{proofPhotoMsg}</Text>
+          ) : null}
+        </>
       )}
     </ScrollView>
   );
@@ -195,13 +233,22 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
   },
-  collectButton: {
-    backgroundColor: '#34C759',
+  cameraProofButton: {
+    backgroundColor: '#555',
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 32,
+  },
+  galleryProofButton: {
+    backgroundColor: '#007AFF',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
     marginBottom: 20,
+  },
+  buttonGap: {
+    height: 8,
   },
   collectButtonDisabled: {
     opacity: 0.6,
@@ -210,5 +257,10 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '700',
     fontSize: 16,
+  },
+  proofPhotoMsg: {
+    marginTop: 8,
+    fontSize: 13,
+    color: '#C00',
   },
 });

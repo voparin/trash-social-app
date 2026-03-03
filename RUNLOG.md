@@ -235,6 +235,21 @@ Template:
 ---
 
 - Date: 2026-03-03
+- Agent: UI Builder
+- Task ID: S4.3
+- Summary: Added camera option for collector proof photo. Single "Mark Collected" button replaced with "Take Proof Photo" (camera) + "Pick from Gallery" stacked buttons, mirroring S3.2 pattern. Permission denied and hardware errors show inline red message; cancel is no-op; updateReport flow unchanged.
+- Files changed:
+  - screens/ReportDetailScreen.js: UPDATED — added `proofPhotoMsg` state; added `handleTakeProofPhoto` (requestCameraPermissionsAsync + launchCameraAsync + error catch); renamed gallery handler to `handlePickProofPhoto`; extracted `applyProofPhoto` helper; replaced single button with two stacked buttons + inline error text + styles
+- Commands run:
+  - Brace-balance check: opens 143 / closes 143 OK
+  - `bash scripts/verify.sh` → OK
+  - `npm test` → 7 passed, exits 0
+- Verification result: ✅ All checks pass. No new npm dependency; no app.json changes needed.
+- Follow-ups / bugs: None.
+
+---
+
+- Date: 2026-03-03
 - Agent: Architect
 - Task ID: S4.3 (use-case definition only)
 - Summary: Defined S4.3 — Collector proof-photo camera option. S4.1 only allows gallery picking; S4.3 adds camera capture (mirrors S3.2 pattern for Reporter). Full acceptance criteria (6 ACs), screen flow, edge-case table, and verify steps written. No new ADR needed (same expo-image-picker + permission pattern; NSCameraUsageDescription and android.permission.CAMERA already in app.json from S3.2).

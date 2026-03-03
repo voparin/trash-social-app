@@ -197,7 +197,7 @@
     5. Press back → list shows the same report with green COLLECTED badge
     6. Restart app → COLLECTED status and proof photo persist (AsyncStorage)
     7. Already-COLLECTED report: open detail → no "Mark Collected" button shown
-- [ ] S4.3 Collector: take proof photo with camera (in addition to gallery)
+- [x] S4.3 Collector: take proof photo with camera (in addition to gallery)
   - **Context:** S4.1 added "Mark Collected" using gallery-only picker. Collectors in the field need to photograph the collected trash in-the-moment; gallery is a fallback, not the primary flow. Mirrors the S3.2 camera-option added for Reporter.
   - **Acceptance criteria:**
     1. Tapping "Mark Collected" on an OPEN report offers two buttons: "Take Proof Photo" (camera) and "Pick from Gallery" (library) — stacked vertically, same visual language as CreateReportScreen.
@@ -220,6 +220,18 @@
     - Both buttons missing for COLLECTED report (regression guard).
   - **Dependencies / app.json:** `NSCameraUsageDescription` (iOS) and `android.permission.CAMERA` already added in S3.2 — no new entries needed. No new npm dependency.
   - **Verify:** `npx expo start` → Collector → tap OPEN report → two buttons visible → tap "Take Proof Photo" → permission dialog → grant → camera opens → capture → badge turns green, Proof Photo section appears, buttons gone → press back → list shows COLLECTED badge → restart app → state persists.
+  - **What changed:**
+    - `screens/ReportDetailScreen.js`: replaced single "Mark Collected" button with two stacked buttons ("Take Proof Photo" dark-grey `#555` + "Pick from Gallery" blue `#007AFF`). Added `proofPhotoMsg` state for inline red error text. Added `handleTakeProofPhoto` (requestCameraPermissionsAsync → launchCameraAsync; permission denied = inline message; hardware error = inline message; cancel = no-op). Renamed gallery handler to `handlePickProofPhoto`. Extracted `applyProofPhoto(uri)` shared helper. Added `buttonGap`, `cameraProofButton`, `galleryProofButton`, `proofPhotoMsg` styles. No new npm dependency; `NSCameraUsageDescription` + `android.permission.CAMERA` already in app.json from S3.2.
+  - **How to test:**
+    1. `npx expo start` → open as Collector
+    2. Tap an OPEN report → detail shows "Take Proof Photo" (grey) and "Pick from Gallery" (blue) stacked at bottom
+    3. Tap "Take Proof Photo" → permission dialog → grant → camera opens → capture → detail immediately shows green COLLECTED badge, Proof Photo section, both buttons gone
+    4. Press back → list row shows green COLLECTED badge
+    5. Restart app → COLLECTED status + proof photo persist
+    6. Tap "Pick from Gallery" on another OPEN report → gallery picker → select → same result as step 3
+    7. Deny camera permission → inline red "Camera access denied — use Pick from Gallery instead." shown; gallery button still works
+    8. Cancel from camera or gallery → no state change, both buttons remain
+    9. Open a COLLECTED report → no buttons shown (regression guard)
 
 - [x] S4.2 Collector: map view on CollectorHome
   - Acceptance: Collector can switch between List and Map tabs; map shows pins for reports with coordinates; tapping a pin opens ReportDetail.
