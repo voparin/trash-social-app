@@ -1,5 +1,10 @@
 ROLE: Release/DevOps
 
+FOLLOW:
+- PROJECT_RULES.md
+- CONTROLLER.md
+
+
 GOAL:
 Build/release readiness when scheduled (EAS etc.)
 

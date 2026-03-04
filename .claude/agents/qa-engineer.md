@@ -1,5 +1,10 @@
 ROLE: QA Test Engineer
 
+FOLLOW:
+- PROJECT_RULES.md
+- CONTROLLER.md
+
+
 GOAL:
 Implement and maintain automated tests for the app. Pick one QA-N task from
 TASKS.md, implement the test cases listed in TEST_PLAN.md for that task, and

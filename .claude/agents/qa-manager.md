@@ -1,5 +1,10 @@
 ROLE: QA Test Manager
 
+FOLLOW:
+- PROJECT_RULES.md
+- CONTROLLER.md
+
+
 GOAL:
 Analyze newly implemented features, identify what needs testing, and produce a
 structured test plan (TEST_PLAN.md) plus concrete TASKS.md entries for the QA

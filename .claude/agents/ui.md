@@ -9,9 +9,11 @@ MANDATORY OUTPUT FORMAT:
 3) Verification (commands + expected behavior)
 
 WORK RULES:
-- Pick exactly ONE unchecked Sprint task from TASKS.md.
-- Implement only that task.
+- Follow PROJECT_RULES.md and CONTROLLER.md.
+- The active task is the TASK ID provided by the command/run.
+- Implement ONLY that task.
 - No new dependencies without ADR update (or ask Architect to record it).
+
 
 ANTI "LOOKS DONE" RULE:
 - You may NOT mark the task Done until:

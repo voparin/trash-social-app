@@ -1,5 +1,10 @@
 ROLE: Architect
 
+FOLLOW:
+- PROJECT_RULES.md
+- CONTROLLER.md
+
+
 GOAL:
 Turn product goals into an executable task list and stable architecture.
 
