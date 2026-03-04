@@ -233,6 +233,49 @@
     8. Cancel from camera or gallery → no state change, both buttons remain
     9. Open a COLLECTED report → no buttons shown (regression guard)
 
+- [x] S4.4 Collector: filter reports by status (All / Open / Collected)
+  - **Context:** CollectorHome list and map currently show all reports regardless of status. In the field a collector wants to focus only on OPEN work or review what was COLLECTED; showing everything at once becomes noisy as the report count grows.
+  - **Acceptance criteria:**
+    1. A filter control (three-segment or tab row) is visible at the top of CollectorHome, above the list/map toggle. Segments: "All", "Open", "Collected".
+    2. Default selection is "All" (no behaviour change on first launch; existing reports remain visible).
+    3. Selecting "Open" hides COLLECTED reports in both list and map views.
+    4. Selecting "Collected" hides OPEN reports in both list and map views.
+    5. Filter selection is ephemeral (not persisted across app restarts — reset to "All" on relaunch).
+    6. Empty-state message is filter-aware:
+       - "All" + no reports → "No reports yet. Reporters will create them."
+       - "Open" + no open reports → "No open reports."
+       - "Collected" + no collected reports → "No collected reports yet."
+    7. Map view respects the filter (pins shown only for matching-status reports with coords).
+    8. Tapping a pin or list row navigates to ReportDetail as before.
+  - **Data model delta:** none — `status` field (`"OPEN"` | `"COLLECTED"`) already on the report model (S3 / S4.1).
+  - **Screen flow:**
+    1. CollectorHome loads → filter = "All", list/map toggle = "List" (default).
+    2. User taps "Open" segment → list/map re-renders showing only OPEN reports; "No open reports." if none.
+    3. User taps "Collected" segment → list/map re-renders showing only COLLECTED reports.
+    4. User taps "All" → all reports shown again.
+    5. User switches to Map tab → current filter still applied (only matching pins shown).
+    6. User marks a report Collected in ReportDetail → back in CollectorHome the list reflects the new status; if filter was "Open" the freshly-collected report disappears from the list.
+  - **Edge cases:**
+    - Filter "Open" with 0 open reports: empty-state "No open reports." (no crash, no blank screen).
+    - Filter "Collected" with 0 collected reports: empty-state "No collected reports yet."
+    - Map tab + "Open" filter + no open reports with coords: "No reports with location data yet." (existing empty-map text is sufficient).
+    - Filter state survives tab switch (List → Map → List keeps the same filter active).
+    - App restart: filter resets to "All" (no persistence required).
+  - **Verify:** `npx expo start` → Collector role → three segments visible at top → tap "Open" → only OPEN rows shown in list and only OPEN pins on map → tap "Collected" → only COLLECTED rows/pins → tap "All" → full list restored → mark a report Collected while "Open" filter is active → detail shows COLLECTED badge → press back → report is gone from the filtered list.
+  - **What changed:**
+    - `screens/CollectorHomeScreen.js`: added `filterStatus` state (default `'ALL'`); added `filteredReports` useMemo (identity when ALL, filters by status otherwise); changed `mappableReports` to derive from `filteredReports` instead of `reports`; added `emptyText()` helper returning filter-aware strings; added 3-segment filter control (All / Open / Collected) above the List/Map toggle, using grey (`#8E8E93`) filled-segment style; FlatList and list empty-state now use `filteredReports`; added `filter`, `filterSegment`, `filterSegmentActive`, `filterText`, `filterTextActive` styles.
+  - **How to test:**
+    1. `npx expo start` → open as Collector
+    2. CollectorHome shows "All | Open | Collected" segment bar at top (All highlighted grey)
+    3. Create 2+ reports as Reporter; mark one Collected
+    4. Back as Collector → All tab: both reports visible
+    5. Tap "Open" → only OPEN report shown; badge orange
+    6. Tap "Collected" → only COLLECTED report shown; badge green
+    7. Tap "All" → both reports visible again
+    8. Tap "Open" → switch to Map tab → only OPEN pins on map
+    9. Mark remaining OPEN report Collected (tap → ReportDetail → Take/Pick proof photo) → press back → list shows "No open reports." empty state (filter still "Open")
+    10. Tap "All" → both COLLECTED reports visible; filter resets to "All" on app restart
+
 - [x] S4.2 Collector: map view on CollectorHome
   - Acceptance: Collector can switch between List and Map tabs; map shows pins for reports with coordinates; tapping a pin opens ReportDetail.
   - Verify: `npx expo start` → Collector → tap Map tab → pins visible → tap pin → ReportDetail opens.

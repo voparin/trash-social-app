@@ -17,10 +17,13 @@ if (Platform.OS !== 'web') {
   ({ default: MapView, Marker } = require('react-native-maps'));
 }
 
+const FILTERS = ['ALL', 'OPEN', 'COLLECTED'];
+
 export default function CollectorHomeScreen({ navigation }) {
   const { clearRole } = useRole();
   const { reports } = useReports();
   const [activeTab, setActiveTab] = useState('list');
+  const [filterStatus, setFilterStatus] = useState('ALL');
 
   const handleChangeRole = async () => {
     await clearRole();
@@ -32,10 +35,18 @@ export default function CollectorHomeScreen({ navigation }) {
     );
   };
 
+  const filteredReports = useMemo(
+    () =>
+      filterStatus === 'ALL'
+        ? reports
+        : reports.filter((r) => r.status === filterStatus),
+    [reports, filterStatus]
+  );
+
   // Reports that have valid coordinates — the only ones shown on the map.
   const mappableReports = useMemo(
-    () => reports.filter((r) => r.lat != null && r.lon != null),
-    [reports]
+    () => filteredReports.filter((r) => r.lat != null && r.lon != null),
+    [filteredReports]
   );
 
   // Compute a region that fits all markers, with a minimum delta so a single
@@ -118,8 +129,29 @@ export default function CollectorHomeScreen({ navigation }) {
     );
   };
 
+  const emptyText = () => {
+    if (filterStatus === 'OPEN') return 'No open reports.';
+    if (filterStatus === 'COLLECTED') return 'No collected reports yet.';
+    return 'No reports yet.\nReporters will create them.';
+  };
+
   return (
     <View style={styles.container}>
+      {/* Status filter */}
+      <View style={styles.filter}>
+        {FILTERS.map((f) => (
+          <TouchableOpacity
+            key={f}
+            style={[styles.filterSegment, filterStatus === f && styles.filterSegmentActive]}
+            onPress={() => setFilterStatus(f)}
+          >
+            <Text style={[styles.filterText, filterStatus === f && styles.filterTextActive]}>
+              {f === 'ALL' ? 'All' : f.charAt(0) + f.slice(1).toLowerCase()}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
       {/* Tab toggle */}
       <View style={styles.tabs}>
         <TouchableOpacity
@@ -142,15 +174,13 @@ export default function CollectorHomeScreen({ navigation }) {
 
       {/* Content */}
       {activeTab === 'list' ? (
-        reports.length === 0 ? (
+        filteredReports.length === 0 ? (
           <View style={styles.emptyState}>
-            <Text style={styles.emptyText}>
-              No reports yet.{'\n'}Reporters will create them.
-            </Text>
+            <Text style={styles.emptyText}>{emptyText()}</Text>
           </View>
         ) : (
           <FlatList
-            data={reports}
+            data={filteredReports}
             keyExtractor={(item) => item.id}
             renderItem={renderItem}
             contentContainerStyle={styles.list}
@@ -173,6 +203,31 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     padding: 16,
+  },
+  filter: {
+    flexDirection: 'row',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#8E8E93',
+    overflow: 'hidden',
+    marginBottom: 8,
+  },
+  filterSegment: {
+    flex: 1,
+    paddingVertical: 7,
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  filterSegmentActive: {
+    backgroundColor: '#8E8E93',
+  },
+  filterText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#8E8E93',
+  },
+  filterTextActive: {
+    color: '#fff',
   },
   tabs: {
     flexDirection: 'row',

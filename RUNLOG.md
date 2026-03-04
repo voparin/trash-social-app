@@ -262,6 +262,33 @@ Template:
 
 ---
 
+- Date: 2026-03-04
+- Agent: UI Builder
+- Task ID: S4.4
+- Summary: Implemented status filter (All / Open / Collected) on CollectorHomeScreen. 3-segment control above List/Map toggle filters both list and map views. Filter is ephemeral. Empty states are filter-aware.
+- Files changed:
+  - screens/CollectorHomeScreen.js: UPDATED — added `filterStatus` state + `filteredReports` useMemo; `mappableReports` now derives from `filteredReports`; added 3-segment filter UI + styles; FlatList uses `filteredReports`; `emptyText()` helper returns filter-aware string; no new dependency.
+- Commands run:
+  - `bash scripts/verify.sh` → OK
+  - `npm test` → 7 passed, exits 0
+- Verification result: ✅ verify.sh OK. All 7 tests pass. No new dependency.
+- Follow-ups / bugs: None.
+
+---
+
+- Date: 2026-03-04
+- Agent: Architect
+- Task ID: S4.4 (use-case definition only)
+- Summary: Defined S4.4 — Collector status filter (All / Open / Collected). CollectorHome shows all reports with no filter today; as the report list grows, collectors need to focus on OPEN work or review COLLECTED items. New filter control (3 segments) placed above the List/Map toggle. Filter applies to both list and map views. Empty-state messages are filter-aware. Filter is ephemeral (not persisted). No data model changes — status field already exists from S3/S4.1. No new npm dependency.
+- Files changed:
+  - TASKS.md: added S4.4 to Sprint section with 8 ACs, screen flow (6 steps), 5 edge cases, verify step
+  - RUNLOG.md: this entry
+- Commands run: (none — documentation/definition task)
+- Verification result: ✅ TASKS.md updated; S4.4 is in Sprint with complete use-case definition.
+- Follow-ups / bugs: UI Builder must implement S4.4. Implementation requires: (1) add `filterStatus` state ('ALL'|'OPEN'|'COLLECTED') to CollectorHomeScreen; (2) derive `filteredReports` from reports + filterStatus; (3) render a 3-segment control above the List/Map toggle; (4) pass filteredReports to both FlatList and MapView marker list; (5) update empty-state strings to be filter-aware. No new npm dependency, no app.json changes, no context changes.
+
+---
+
 - Date: 2026-02-20
 - Agent: Architect
 - Task ID: S3.2 (use-case definition only)
