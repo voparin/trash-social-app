@@ -289,6 +289,33 @@ Template:
 
 ---
 
+- Date: 2026-03-04
+- Agent: UI Builder
+- Task ID: S5.1
+- Summary: Reporter status badge now colour-codes by status (orange for OPEN, green for COLLECTED), matching CollectorHomeScreen behaviour.
+- Files changed:
+  - screens/ReporterHomeScreen.js: replaced static `reportStatus` style with conditional `statusOpen`/`statusCollected` badge pattern; added `statusBadge`, `statusOpen`, `statusCollected`, `statusText`, `statusTextOpen`, `statusTextCollected` styles; removed `reportStatus`.
+- Commands run:
+  - `bash scripts/verify.sh` → OK
+  - `npm test` → 7 passed, exits 0
+- Verification result: ✅ verify.sh OK. All 7 tests pass. No new dependency.
+- Follow-ups / bugs: None.
+
+---
+
+- Date: 2026-03-04
+- Agent: Architect
+- Task ID: S5.1 (use-case definition only)
+- Summary: Defined S5.1 — Reporter status badge colour fix. In ReporterHomeScreen all badge rows use a static orange style regardless of status. CollectorHomeScreen already applies conditional styles (orange for OPEN, green for COLLECTED). S5.1 aligns Reporter view with Collector view: COLLECTED rows turn green. No new dependency, no data model change, no context change. Single-file UI fix in ReporterHomeScreen.js. Starts the S5 task series.
+- Files changed:
+  - TASKS.md: added S5.1 to Sprint section with context, 4 ACs, data model delta, files-to-change, implementation note, and verify step
+  - RUNLOG.md: this entry
+- Commands run: (none — documentation/definition task)
+- Verification result: ✅ TASKS.md updated; S5.1 is in Sprint with complete use-case definition.
+- Follow-ups / bugs: UI Builder must implement S5.1. Implementation is confined to ReporterHomeScreen.js: replace static `reportStatus` style with conditional badge styles mirroring CollectorHomeScreen.js pattern.
+
+---
+
 - Date: 2026-02-20
 - Agent: Architect
 - Task ID: S3.2 (use-case definition only)

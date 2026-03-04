@@ -290,5 +290,24 @@
     6. ReportDetail works normally; press back → returns to CollectorHome map tab
     7. No reports with location: map tab shows "No reports with location data yet."
 
+- [x] S5.1 Reporter: colour-code status badge by status (match collector behaviour)
+  - **Context:** ReporterHomeScreen shows all report rows with the same orange badge (`#FF9500` / `#FFF3E0`) regardless of status. CollectorHomeScreen already uses conditional styles: OPEN = orange, COLLECTED = green (`#34C759` / `#E8F5E9`). A reporter's COLLECTED reports should be visually distinct from OPEN ones, consistent with what the Collector sees.
+  - **Acceptance criteria:**
+    1. An OPEN report row on ReporterHome shows an orange badge (text `#FF9500`, background `#FFF3E0`) — unchanged from current.
+    2. A COLLECTED report row on ReporterHome shows a green badge (text `#34C759`, background `#E8F5E9`) — matching CollectorHome.
+    3. No other UI element on ReporterHomeScreen changes.
+    4. No data model, context, or navigation changes.
+  - **Data model delta:** none — `status` field already exists on every report.
+  - **Files to change:** `screens/ReporterHomeScreen.js` only.
+  - **Implementation note:** Replace the static `reportStatus` style applied to the `<Text>` with the same conditional inline-style pattern used in `CollectorHomeScreen.js` (`item.status === 'COLLECTED' ? ... : ...`). Add `statusBadge`, `statusOpen`, `statusCollected`, `statusTextOpen`, `statusTextCollected` styles (copy from CollectorHomeScreen). Remove the now-redundant static `reportStatus` style.
+  - **Verify:** `npx expo start` → Reporter role → create two reports → mark one Collected as Collector → switch back to Reporter → OPEN row has orange badge, COLLECTED row has green badge.
+  - **What changed:**
+    - `screens/ReporterHomeScreen.js`: replaced static `reportStatus` style (always orange) with conditional badge pattern matching CollectorHomeScreen — wraps status text in a `<View>` with `statusOpen`/`statusCollected` background, text styled via `statusTextOpen`/`statusTextCollected`. Removed old `reportStatus` style; added `statusBadge`, `statusOpen`, `statusCollected`, `statusText`, `statusTextOpen`, `statusTextCollected`.
+  - **How to test:**
+    1. `npx expo start` → open as Reporter
+    2. Create a report → row shows orange OPEN badge
+    3. Switch to Collector → mark the report Collected
+    4. Switch back to Reporter → same row now shows green COLLECTED badge
+
 ## Done
 - [ ] (empty)

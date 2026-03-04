@@ -51,7 +51,11 @@ export default function ReporterHomeScreen({ navigation }) {
           </Text>
         )}
         <View style={styles.reportMeta}>
-          <Text style={styles.reportStatus}>{item.status}</Text>
+          <View style={[styles.statusBadge, item.status === 'COLLECTED' ? styles.statusCollected : styles.statusOpen]}>
+            <Text style={[styles.statusText, item.status === 'COLLECTED' ? styles.statusTextCollected : styles.statusTextOpen]}>
+              {item.status}
+            </Text>
+          </View>
           <Text style={styles.reportTime}>{formatTime(item.createdAt)}</Text>
         </View>
       </View>
@@ -168,15 +172,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
-  reportStatus: {
-    fontSize: 12,
-    color: '#FF9500',
-    fontWeight: '600',
-    backgroundColor: '#FFF3E0',
+  statusBadge: {
     paddingHorizontal: 6,
     paddingVertical: 1,
     borderRadius: 4,
     overflow: 'hidden',
+  },
+  statusOpen: {
+    backgroundColor: '#FFF3E0',
+  },
+  statusCollected: {
+    backgroundColor: '#E8F5E9',
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  statusTextOpen: {
+    color: '#FF9500',
+  },
+  statusTextCollected: {
+    color: '#34C759',
   },
   reportTime: {
     fontSize: 12,
